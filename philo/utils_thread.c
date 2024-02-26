@@ -1,29 +1,39 @@
 #include "philo.h"
 
-// test
-void	run_sync(void (*func)(void *), void *arg, pthread_mutex_t *sync)
+void	sync_print(char *str, t_philo *philo)
 {
-	pthread_mutex_lock(sync);
-	func(arg);
-	pthread_mutex_unlock(sync);
+	pthread_mutex_lock(&philo->data->output);
+	if (is_all_alive(philo->data))
+	{
+		printf("%zu %d ", get_time() - philo->data->start, philo->id);
+		printf("%s\n", str);
+	}
+	pthread_mutex_unlock(&philo->data->output);
 }
 
 void	change_philo_status(t_philo *philo, t_status status)
 {
-	pthread_mutex_lock(&philo->modify);
+	pthread_mutex_lock(&philo->status_mutex);
 	philo->status = status;
-	pthread_mutex_unlock(&philo->modify);
-	pthread_mutex_lock(&philo->data->output);
-	printf("%zu %d ", get_time() - philo->data->start, philo->id);
+	pthread_mutex_unlock(&philo->status_mutex);
 	if (status == EATING)
-		printf("is eating\n");
+		sync_print("is eating", philo);
 	else if (status == SLEEPING)
-		printf("is sleeping\n");
+		sync_print("is sleeping", philo);
 	else if (status == THINKING)
-		printf("is thinking\n");
+		sync_print("is thinking", philo);
 	else if (status == DIED)
-		printf("died\n");
-	pthread_mutex_unlock(&philo->data->output);
+		sync_print("died", philo);
+}
+
+t_status	get_philo_status(t_philo *philo)
+{
+	t_status	status;
+
+	pthread_mutex_lock(&philo->status_mutex);
+	status = philo->status;
+	pthread_mutex_unlock(&philo->status_mutex);
+	return (status);
 }
 
 int	start_threads(t_data *data)
@@ -32,6 +42,8 @@ int	start_threads(t_data *data)
 
 	i = 0;
 	data->start = get_time();
+	if (pthread_create(&data->checker, NULL, &checker_routine, data))
+		return (1);
 	while (i < data->philo_n)
 	{
 		if (pthread_create(&data->philos[i].thread, NULL,
@@ -39,8 +51,6 @@ int	start_threads(t_data *data)
 			return (1);
 		i++;
 	}
-	// if (pthread_create(&data->checker, NULL, &checker_routine, data))
-	// 	return (1);
 	return (0);
 }
 
@@ -50,12 +60,9 @@ int	join_threads(t_data *data)
 
 	i = 0;
 	while (i < data->philo_n)
-	{
-		if (pthread_join(data->philos[i].thread, NULL))
+		if (pthread_join(data->philos[i++].thread, NULL))
 			return (1);
-		i++;
-	}
-	// if (pthread_join(data->checker, NULL))
-	// 	return (1);
+	if (pthread_join(data->checker, NULL))
+		return (1);
 	return (0);
 }
