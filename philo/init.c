@@ -64,6 +64,8 @@ int	init_data(t_data *data, int argc, char **argv)
 		data->meals_n = ft_atoi(argv[5]);
 	else
 		data->meals_n = -1;
+	if (data->philo_n < 1)
+		return (1);
 	data->philos = malloc(sizeof(t_philo) * data->philo_n);
 	if (!data->philos)
 		return (1);

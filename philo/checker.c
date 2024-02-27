@@ -4,11 +4,12 @@ static void	philo_dead(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->all_alive_mutex);
 	pthread_mutex_lock(&philo->status_mutex);
-	printf("%zu %d is died\n", get_time() - philo->data->start, philo->id);
+	printf("%zu %d died\n", get_time() - philo->data->start, philo->id);
 	philo->data->all_alive = 0;
 	philo->status = DIED;
 	pthread_mutex_unlock(&philo->status_mutex);
 	pthread_mutex_unlock(&philo->data->all_alive_mutex);
+	release_forks(philo);
 }
 
 int	is_all_alive(t_data *data)
@@ -46,7 +47,7 @@ void	*checker_routine(void *arg)
 		if (data->meals_n != -1 && philo->meals >= data->meals_n)
 			check++;
 		pthread_mutex_unlock(&philo->meals_mutex);
-		ft_usleep(50);
+		usleep(500);
 	}
 	return (NULL);
 }

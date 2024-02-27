@@ -6,7 +6,7 @@
 /*   By: lorenzogaudino <lorenzogaudino@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 15:12:41 by lorenzogaud       #+#    #+#             */
-/*   Updated: 2024/02/26 17:41:00 by lorenzogaud      ###   ########.fr       */
+/*   Updated: 2024/02/26 23:45:24 by lorenzogaud      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	update_last_meal(t_philo *philo)
 void	p_eat(t_philo *philo)
 {
 	take_forks(philo);
-	if (get_philo_status(philo) == DIED)
+	if (!is_all_alive(philo->data) || get_philo_status(philo) == DIED)
 	{
 		release_forks(philo);
 		return ;
