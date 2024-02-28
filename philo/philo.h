@@ -6,7 +6,7 @@
 /*   By: lorenzogaudino <lorenzogaudino@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 18:21:41 by lorenzogaud       #+#    #+#             */
-/*   Updated: 2024/02/26 23:22:09 by lorenzogaud      ###   ########.fr       */
+/*   Updated: 2024/02/29 00:21:05 by lorenzogaud      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,6 @@ void		clear_data(t_data *data);
 void		*philo_routine(void *arg);
 void		*checker_routine(void *arg);
 void		release_forks(t_philo *philo);
+
 
 #endif

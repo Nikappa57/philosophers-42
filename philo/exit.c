@@ -2,7 +2,8 @@
 
 void	clear_data(t_data *data)
 {
-	int	i;
+	int		i;
+	t_philo	*philo;
 
 	if (data->checker)
 		pthread_detach(data->checker);
@@ -11,13 +12,19 @@ void	clear_data(t_data *data)
 		i = 0;
 		while (i < data->philo_n)
 		{
-			pthread_mutex_destroy(&data->philos[i].status_mutex);
-			pthread_mutex_destroy(&data->philos[i].meals_mutex);
+			philo = &data->philos[i];
+			pthread_mutex_destroy(&philo->status_mutex);
 			i++;
 		}
 		free(data->philos);
+		pthread_mutex_destroy(&data->output);
+		pthread_mutex_destroy(&data->all_alive_mutex);
 	}
 	if (data->forks)
+	{
+		i = 0;
+		while (i < data->philo_n)
+			pthread_mutex_destroy(&data->forks[i++]);
 		free(data->forks);
-	return ;
+	}
 }

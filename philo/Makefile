@@ -6,7 +6,7 @@ HEADER = philo.h
 OBJS = $(SRCS:.c=.o)
 
 CLANG = gcc
-# C_FLAGS = -Wall -Wextra -Werror
+C_FLAGS = -Wall -Wextra -Werror 
 INCLUDE	= -lpthread
 
 all: $(NAME)
